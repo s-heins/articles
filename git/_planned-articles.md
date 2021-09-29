@@ -20,6 +20,7 @@
   * commits, blobs, and trees
 * Advanced git
   * amending
+  * pull strategies: rebase vs merge
   * rebasing
   * cherry-picking
   * stashing
