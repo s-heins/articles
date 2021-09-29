@@ -14,6 +14,7 @@
     * setting up a remote
     * pushing
   * Branching
+  * Resolving merge conflicts
 * A deeper look: How does git work behind the scenes?
   * snapshots, not file differences
   * commits, blobs, and trees
