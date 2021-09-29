@@ -9,6 +9,7 @@
     * git add
     * git commit
     * (background: three stages of git & file status)
+* Working with collaborators
   * working with remotes
     * setting up a remote
     * pushing
