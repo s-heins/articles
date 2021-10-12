@@ -103,7 +103,7 @@ If we now look at the git tree after finishing the rebase, we can see that it lo
 
 ![If we look at the git tree, Anna's changes will appear after mine](tree-after-rebasing.png)
 
-## Conclusion
+## Conclusion and command summary
 
 We have looked at how to push our changes to a remote repository and have created our first branch, kept adding and committing and have resolved our first conflict!
 

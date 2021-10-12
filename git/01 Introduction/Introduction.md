@@ -86,3 +86,18 @@ In the next article, we will be looking at how to work with remotes in case you 
 If you work with multiple collaborators, working with branches in conjunction with a version control service that lets you create requests to propagate these changes into the main branch enables you to first review the changes before they go into your main branch most easily. Propagating changes from one branch to the other is called *merging* one branch into the other.
 Otherwise, collaborators would commit in the main branch and if something goes seriously wrong, you would have to roll back those changes and if a commit needs to be reworked, additional rework commits need to be added, potentially bloating up your tree instead of the collaborator being able to still add them to their commit before merging. However, there are working modes that use only one branch; this is called trunk-based development.
 However, most teams I have worked in have chosen to work with branching and so-called *merge requests*, also called *pull requests*.
+
+## Conclusion and command summary
+
+We created our first local git repository, and added and committed a file to it!
+
+Here are some commands to keep in mind:
+
+* `git init` to initialize a local git repository
+* `git status` to show the current status of a repository and the files it contains
+* `git add .` to add all files
+* `git commit -m 'My message'` to commit those changes with a commit message (i.e. propagate those changes to the branch and thus keep them from being lost)
+* setting some options in the global git config file at `~/.gitconfig`:
+  * `git config --global user.name "Evelyn Example"` to set the author name globally (for all git repositories)
+  * `git config --global user.email evelyn@example.com` to set the author email address globally
+  * `git config --global init.defaultBranch main` to set the default branch name when initializing a new repository to `main` globally
