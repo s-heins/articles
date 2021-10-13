@@ -1,13 +1,17 @@
 # A practical introduction to git – jumping in with both feet
 
-If you're a developer, you have probably heard about git. If you haven't used it yourself yet, or not a lot, you might also be a bit scared by all the different words – commits, branches, pushing, cherry-picking, rebasing, … what is all that stuff? And why is version control so hard? What if I do the wrong thing and I end up losing everything?
+If you're a developer, you have probably heard about the version control system, git. If you haven't used it yourself yet, or not a lot, you might also be a bit scared by all the different words – commits, branches, pushing, cherry-picking, rebasing, … what is all that stuff? And why is version control so hard? What if I do the wrong thing and I end up losing everything?
 
 First up, git doesn't lose anything you have committed. It might be a bit harder to find but don't despair. We'll get you there.
 But let's start at the beginning without any looming threat of losing your changes.
 
+## Why version control?
+
+If you add some files or change their contents, you'll want to have a way to save your progress. The difference between having the file in a version control system such as git rather than just saving it on your hard drive is that you have a history of the file along with additional metainformation – you could revert back to an old version if you wanted to, look at exactly which changes were introduced when, by whom, and, if they wrote a meaningful message, why they did those changes.
+
 ## Your task
 
-Let's say you're tasked with creating an encyclopedia on animals. This is something that will require a lot of work, and re-working articles, so you want to know your articles are safe and sound. You decide to start a git repository to commit your changes.
+Let's say you're tasked with creating an encyclopedia on animals. This is something that will require a lot of work, and re-working articles, so you want to know your articles are safe and sound. You might also want to revert some changes if your editor tells you to get rid of that article on flamingos one day and then changes their mind the next. You decide to start a git repository to commit your changes.
 
 ## Setup
 
@@ -21,8 +25,8 @@ As you can see, this creates to a hidden folder `.git`. If we delete this folder
 
 ### Configure
 
-In order not to get mixed up with different authors, you will want to set your name and email in your git config.
-You can either do so globally for the current logged-in user by running it with the `--global` modifier which sets it for all repositories, or for just this one repository if you run these commands with the `--local` flag or leaving out the flag altogether since "local" is the default setting.
+So that other people know whom to contact regarding the changes you introduced because they might have some questions (or if you want to be able to run into some code and then marvel at the fact that these changes here were done by yourself a year ago and now you can't remember very much about them), you will want to set your name and email in your git config.
+You can either do so globally for the current logged-in user by running it with the `--global` modifier which sets it for all repositories you commit to from this user on your machine, or for just this one repository if you run these commands with the `--local` flag or leaving out the flag altogether since "local" is the default setting.
 
 ```shell
 git config --global user.name "Evelyn Example"
@@ -32,10 +36,10 @@ git config --global user.email evelyn@example.com
 ## Getting started on content
 
 Now that we've got this out of the way, let's get started!
-You might have noticed that git has automatically created a branch named "main" for us (or, depending on your settings, this may also be called "master". If you want to change the name of the default branch that gets created on running git init, you can run `git config --global init.defaultBranch main` , or whichever name you prefer instead of `main`).
+You might have noticed that git has automatically created a branch named "main" for us (or, depending on your settings, this may also be called "master". If you want to change the name of the default branch that gets created on running git init to something other than `master`, you can run `git config --global init.defaultBranch main` , or whichever name you prefer instead of `main`).
 
-Depending on which approach you are using when developing, you may work with additional branches, then creating merge requests that need to be approved so you can move these changes onto the main branch, or just the main branch.
-Let's assume we're the only collaborator on this encyclopedia for now and thus, we can use the main branch to make our changes and will not run into trouble.
+Depending on which approach you are using when developing, you may work with additional branches, then creating merge requests that need to be approved so you can move these changes onto the main branch, or alternatively, just work with the main branch.
+Let's assume we're the only collaborator on this encyclopedia for now and thus, we can use the main branch to make our changes and will not run into trouble. (If multiple people are working on just one branch, it requires a team that is highly coordinated so those changes keep getting reviewed)
 
 ### Adding files
 
@@ -81,11 +85,14 @@ You can add your own aliases by editing the `~/.gitconfig` file (on Linux / MacO
 
 I highly recommend adding the alias under `lg` for a pretty git tree right in your command line.
 
+## Outlook: Working with remotes and branches
+
 In the next article, we will be looking at how to work with remotes in case you want to save your work somewhere other than just your local machine and how to work with branches.
 
-If you work with multiple collaborators, working with branches in conjunction with a version control service that lets you create requests to propagate these changes into the main branch enables you to first review the changes before they go into your main branch most easily. Propagating changes from one branch to the other is called *merging* one branch into the other.
-Otherwise, collaborators would commit in the main branch and if something goes seriously wrong, you would have to roll back those changes and if a commit needs to be reworked, additional rework commits need to be added, potentially bloating up your tree instead of the collaborator being able to still add them to their commit before merging. However, there are working modes that use only one branch; this is called trunk-based development.
+If you work with multiple collaborators, working with branches in conjunction with a version control service such as github or gitlab that lets you create requests to propagate these changes into the main branch enables you to first review the changes before they go into your main branch most easily. Propagating changes from one branch to the other is called *merging* one branch into the other.
+Otherwise, collaborators would commit in the main branch and if something goes seriously wrong, they would have to roll back those changes. Or if a commit needs to be reworked, additional rework commits need to be added, potentially bloating up your tree instead of the collaborator being able to still add them to their commit before merging. There are working modes though that use only one branch; this is called trunk-based development.
 However, most teams I have worked in have chosen to work with branching and so-called *merge requests*, also called *pull requests*.
+More on working with branches in the next post though!
 
 ## Conclusion and command summary
 
