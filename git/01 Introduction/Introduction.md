@@ -1,13 +1,19 @@
 # A practical introduction to git – jumping in with both feet
 
+![Cover image](burning-tree-crop.jpg)
+
 If you're a developer, you have probably heard about the version control system, git. If you haven't used it yourself yet, or not a lot, you might also be a bit scared by all the different words – commits, branches, pushing, cherry-picking, rebasing, … what is all that stuff? And why is version control so hard? What if I do the wrong thing and I end up losing everything?
 
 First up, git doesn't lose anything you have committed. It might be a bit harder to find but don't despair. We'll get you there.
 But let's start at the beginning without any looming threat of losing your changes.
 
+This will be the first article in a series and it will tell you how to set up your repository from the command line, how to add changes and save ("commit") them, how to set your name and email address to be added as metadata to those changes, and how to do define a git alias, namely one to get a pretty git tree of your changes in the console.
+
+(Cover image by [Nerry Burg](https://freeimages.com/photographer/nexxy-42715) from [FreeImages](https://freeimages.com))
+
 ## Why version control?
 
-If you add some files or change their contents, you'll want to have a way to save your progress. The difference between having the file in a version control system such as git rather than just saving it on your hard drive is that you have a history of the file along with additional metainformation – you could revert back to an old version if you wanted to, look at exactly which changes were introduced when, by whom, and, if they wrote a meaningful message, why they did those changes.
+If you add some files or change their contents, you'll want to have a way to save your progress. The difference between having the file in a version control system such as git rather than just saving it on your hard drive is that you have a history of the file along with additional metadata – you could revert back to an old version if you wanted to, look at exactly which changes were introduced when, by whom, and, if they wrote a meaningful message, why they did those changes.
 
 ## Your task
 

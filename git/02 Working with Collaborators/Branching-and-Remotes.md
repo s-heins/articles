@@ -1,5 +1,7 @@
 # Branching and working with remotes
 
+![Cover image](lone-tree-1410103-1279x785.jpg)
+
 In the Introduction article, we looked at how to set up a local git repository, how to configure git and create aliases, and how to add and commit files on the example of creating an encyclopedia with articles and a list of topics to write about. We have also added some aliases to our gitconfig file at `~/.gitconfig`, such as this one that lets us print a neat-looking tree in the command line to show us the git history. I'm adding it here again since we will keep using it throughout this article.
 
 ```shell
@@ -8,6 +10,8 @@ lg = !clear && git log --all --graph --pretty='format:%C(auto)%h%d %s  %C(magent
 ```
 
 Now we will look at how to save your work remotely so that you won't only have access to it locally on your machine but also on other machines and you can work with collaborators. Your encyclopedia is going places and at any rate, you wouldn't want to do it all by yourself. It's time to give this thing called balance a go and let other people join in on your project.
+
+(Cover image by [fabrizio turco](https://freeimages.com/photographer/zirak-34282) from [FreeImages](https://freeimages.com))
 
 ## Working with remotes
 
