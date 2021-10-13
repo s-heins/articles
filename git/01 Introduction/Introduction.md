@@ -23,7 +23,7 @@ Let's say you're tasked with creating an encyclopedia on animals. This is someth
 
 ### Initializing your git repository
 
-In your shell, create a new directory and initialize your git repository but running `git init`:
+In your shell, create a new directory and initialize your git repository by running `git init`:
 
 ![Initializing a git repository](initialize-git.png)
 
