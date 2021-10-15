@@ -19,11 +19,19 @@
 * A deeper look: How does git work behind the scenes?
   * snapshots, not file differences
   * commits, blobs, and trees
-* Advanced git
+  * HEAD, detached HEAD, and head
+* Intermediate git
+  * git diff
   * interactive adding
   * using a commit template
   * amending
+  * stashing
+  * checkout
+  * reset
+* Advanced git  
+  * cherry-picking
   * pull strategies: rebase vs merge
   * rebasing
-  * cherry-picking
-  * stashing
+    * push --force vs --force-with-lease
+    * git reflog
+  * setting up pulling via SSH
