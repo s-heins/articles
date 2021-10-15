@@ -2,7 +2,7 @@
 
 ![Cover image](lone-tree-1410103-1279x785.jpg)
 
-In this article, we will have a look on how to work with remotes to work together with collaborators, how to work with branches, and how to resolve conflicts between two sets of changes.
+In this article, we will have a look on how to work with remotes to work together with collaborators, how to work with branches, how to resolve conflicts between two sets of changes, and finally, how to merge and delete branches using the CLI or the GitHub UI.
 
 (Cover image by [fabrizio turco](https://freeimages.com/photographer/zirak-34282) from [FreeImages](https://freeimages.com))
 
@@ -19,7 +19,7 @@ Now we will look at how to save our work remotely so that we won't only have acc
 
 ## Working with remotes
 
-All we have for now is our changes on our own machine. Anything that we commit will not be lost as long as our machine is working, but we can't share it with anyone else easily nor will it be safe if our device decides to stop working.
+All we have for now is our changes on our own machine. Anything that we commit will not be lost as long as our machine is working, but we can't share it with anyone else easily nor will it be safe if our device decides to stop working (as they tend to do in the most inopportune moments).
 
 ### Creating a remote repository
 
@@ -111,11 +111,48 @@ We can now edit the file to remove the three lines git has added to show us the 
 ![Resolving conflicts](git-resolving-conflict.png)
 
 After we have resolved the conflicts, we need to add the file so git knows that we can continue reconciling the changes that Anna and I have made.
-In this case, I have put a line in my `~/.gitconfig` file telling git it should *rebase* rather than try to *merge* any conflicts. That means that it will try to make it as if Anna's changes had come after my own. We will go into the difference between merging and rebasing in a later article. For now, it doesn't matter that much which one you pick. If you look at the above screenshot, you will see git tells me to run `git rebase --continue` once I am done resolving my conflicts. If you chose `merge` as a pull strategy, it will tell you to run `git merge --continue` instead. This will only have an impact on how your tree looks afterwards but it will not have any impact on your file changes.
+In this case, I have put a line in my `~/.gitconfig` file telling git it should *rebase* rather than try to *merge* any conflicts. That means that it will try to make it as if Anna's changes had come after my own. We will go into the difference between merging and rebasing in a later article. For now, it doesn't matter that much which one you pick. If you look at the above screenshot, you will see git tells me to run `git rebase --continue` once I am done resolving my conflicts. If you chose `merge` as a pull strategy, it will tell you to run `git merge --continue` instead. This will only have an impact on how our tree looks afterwards but it will not have any impact on our file changes.
 
-If we now look at the git tree after finishing the rebase, we can see that it looks as if Anna had done her changes after mine.
+If we now look at the git tree after finishing the rebase, we can see that it looks as if Anna had done her changes after our own.
 
-![If we look at the git tree, Anna's changes will appear after mine](tree-after-rebasing.png)
+![If we look at the git tree, Anna's changes will appear after our own](tree-after-rebasing.png)
+
+## Merging and deleting branches from the console
+
+Let's say we have added articles on all animals we had on our list for now, have shown them to our editor, and they are happy with them. That means that we can now propagate those changes into our main branch and will no longer need our branch `articles-on-animals-from-list`.
+
+Firstly, we'll want to `git pull` on our article branch to make sure we have the latest changes. Then, we check out the main branch and run `git merge articles-on-animals-from-list`. Afterwards, we push again to make sure those changes are also on our upstream main branch.
+
+![Merging our branch to main](merging-changes.png)
+
+Afterwards, we can delete the branch on your machine by running this command:
+
+```shell
+git branch -D articles-on-animals-from-list
+```
+
+And this command to delete the remote branch:
+
+```shell
+git push --delete articles-on-animals-from-list
+```
+
+## Merging and deleting branches from the GitHub UI
+
+In practice, you will probably never run these commands from the CLI but rather use a version control provider such as GitHub or GitLab. Rather, you will create a request to propagate your changes into the main branch, called *pull request (PR)* on GitHub, and *merge request (MR)* on GitLab.
+
+On GitHub, click on the "Pull requests" tab and then on the button saying "Compare & pull request".
+
+![Creating a pull request via the GitHub UI](github-ui-pull-requests.png)
+
+On the next dialogue window, click on "Create pull request".
+You will see an overview page where you can see how many commits will be added to main and what changes they will introduce.
+
+After it has been reviewed, it can be merged to main by clicking the "Merge pull request" button.
+
+![Click on "merge pull request" to merge your changes to main](github-ui-merge-pull-request.png)
+
+After confirming the merge, you also have the option to delete your old branch via the UI. However, this will only delete the remote branch and you will still have to run `git branch -D articles-on-animals-from-list` to delete your local branch.
 
 ## Conclusion and command summary
 
@@ -129,3 +166,6 @@ Here are some commands to keep in mind:
 * `git checkout my-branch-name` to switch to an existing branch from the remote
 * `git pull` to pull changes from the remote
 * `git rebase --continue` or `git merge --continue` to continue a rebase or merge after adding files
+* `git merge my-branch` to merge "my-branch" into the branch you have currently checked out
+* `git branch -D my-branch` to delete "my-branch" locally
+* `git push --delete my-branch` to delete "my-branch" on the upstream
