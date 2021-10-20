@@ -11,7 +11,7 @@ As a resource for this article, I have used the [Pro Git book, written by Scott 
 
 Git does not store the exact differences between files (for example, add the line "house cat" to your file list-of-animals-to-write-about), but rather, it stores **snapshots**.
 
-It has a snapshot for each file, and it computes a SHA-1 hash value based on the contents for each file and uses it for checksumming. If the checksum of a file has changed, the file itself must have changed. If a file was deleted and another was added but they share the same checksum, they must have the same contents – this is how git knows that a file was renamed.
+It has a snapshot for each file, and it computes a SHA-1 hash value based on the contents for each file and uses it for checksumming. SHA-1 is cryptographic hash function that makes it highly unlikely to create the same hash for two different files, so if the hash is the same, we can assume that it was created based on the same input. If the checksum of a file has changed, the file itself must have changed. If a file was deleted and another was added but they share the same checksum, they must have the same contents – this is how git knows that a file was renamed.
 
 If the contents of a file have changed, the name will be the same but its hash will be different.
 
@@ -87,3 +87,5 @@ Let's say our collaborators Anna and Wolfgang have been busy and our git tree cu
 In this example, we have merged "articles-on-animals-from-list" into "main" and the commit `2cca46a` is a merge commit. `98369a7` ("Add a house cat") is the first commit and has no parent, and all other commits in between have only one parent. The commits `0a6ebca` and `b6eb6d0` have the same parent, but they only have one parent.
 
 To look at `commit` metadata, we can use `git cat-file -p`, where `-p` lets us pretty-print the object's content.
+
+I'm saying object because git stores multiple pieces of information as objects – 
