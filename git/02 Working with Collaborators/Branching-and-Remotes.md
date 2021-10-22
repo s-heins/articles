@@ -2,7 +2,7 @@
 
 ![Cover image](lone-tree-1410103-1279x785.jpg)
 
-In this article, we will have a look on how to work with remotes to work together with collaborators, how to work with branches, how to resolve conflicts between two sets of changes, and finally, how to merge and delete branches using the CLI or the GitHub UI.
+In this article, we will have a look at how to work with remotes in order to work together with collaborators, how to work with branches, how to resolve conflicts between two sets of changes (aka "Why does git reject my push?"), and finally, how to merge and delete branches using the CLI or the GitHub UI.
 
 (Cover image by [fabrizio turco](https://freeimages.com/photographer/zirak-34282) from [FreeImages](https://freeimages.com))
 
@@ -25,7 +25,7 @@ All we have for now is our changes on our own machine. Anything that we commit w
 
 Firstly, we need to settle on a place to host our repository. This could be GitHub or GitLab, for example.
 After creating an account, we can create our repository.
-On how to set up a repository, please see these articles in their respective documentation: [GitHub](https://docs.github.com/en/get-started/quickstart/create-a-repo), [GitLab](https://docs.gitlab.com/ee/user/project/repository/)
+On how to set up a repository, please see these articles in their respective documentation pages: [GitHub](https://docs.github.com/en/get-started/quickstart/create-a-repo), [GitLab](https://docs.gitlab.com/ee/user/project/repository/)
 
 ### Pushing our existing changes to the remote
 
@@ -34,7 +34,7 @@ After creating a new repository on GitHub, it already shows us some instructions
 ![GitHub instructions on how to push an existing repository](github-push-to-remote.png)
 
 The first line is adding a so-called `origin` to our local repository. This is referencing our new repo on github. In this example you can see that I have chosen to use SSH but this can be switched with a button further on top if you want to use HTTP. Using SSH will require you to set up a private and public SSH key pair whereas you will only have to authenticate with your username and password or access key if you use HTTP, so it will be easier if you have never done this before.
-Since I had previously connected to GitHub on my machine, I was not prompted for my login credentials here. If you are, enter the credentials you are prompted for and then you are able to push to your remote repository.
+Since I had previously connected to GitHub on my machine, I was not prompted for my login credentials here. If you are, enter the credentials you are prompted for and then you are able to push to your remote repository, to your origin.
 
 ![Pushing to a remote repository](pushing-to-remote.png)
 
@@ -67,12 +67,12 @@ The first thing Anna wants to do is create a new branch. This way we can keep th
 
 ### Creating a new branch
 
-To create a new branch and switch to it, use `git checkout -b my-branch-name`. In case you are working with tickets on Jira, for example, prefixing your branch with the ticket name enables your team to get a good overview what tickets are currently being worked on. We could name our branch "ENC-001_add-animal-articles" if our ticket number is "ENC-001", for example.
+To create a new branch and switch to it, use `git checkout -b my-branch-name`. In case you are working with tickets on Jira, for example, prefixing your branch with the ticket name enables your team to get a good overview on what tickets are currently in progress. We could name our branch "ENC-001_add-animal-articles" if our ticket number is "ENC-001", for example.
 
 ### Pushing a new branch to origin
 
 After Anna has added some articles (`git add .`) and committed them to her local repository (`git commit -m "My message"`), she wants to push those changes to the remote.
-She can do so by running `git push -u origin my-branch-name`.
+She can do so by running `git push -u origin my-branch-name`. With this, her local changes are propagated to our origin (also called *upstream*), our repository on GitHub. Now it is possible for others to see Anna's changes and add their own.
 
 ![Pushing a new branch to the remote](pushing-new-branch-to-remote.png)
 
@@ -84,7 +84,7 @@ After we have created articles for the animals that are still missing from the l
 
 ![Adding more files and pushing to the new branch](adding-more-files-and-pushing.png)
 
-After Anna pulls again, she will also have my changes.
+After Anna pulls again, she will also have our changes.
 
 By using the same branch and adding our commits, we can safely collaborate. Anna and me can both commit and push our changes as we go along. We just shouldn't both alter the same file at the same time or we will get conflicts that we will need to resolve.
 
@@ -96,7 +96,7 @@ When Anna tries to push her commit, git will not let her. It rejects her commit 
 
 ![Git has rejected Anna's push](push-rejected.png)
 
-Once Anna pulls, git now tells her she has a conflict. If you use an IDE with version control functionality, you can also resolve any conflicts there, but we will go the manual way here.
+Once Anna pulls, git now tells her she has a conflict. If you use an IDE with version control functionality, you can also resolve any conflicts there and you normally would. Here, we will go the manual way for now because it will give us some insight into what happens in git behind the scenes without part of it being masked by IDE functionality.
 
 As you can see, the contents of the file have a line saying `HEAD` that contain our changes where we added the gorilla and chimpanzee (the changes that we have already pushed to our branch on the remote), then another line of equals signs as separators, then her changes where she added the alligator and the crocodile, and then a line with the name of her commit, `7aaee11`, and her commit message (`Add alligator and crocodile to the list`).
 
