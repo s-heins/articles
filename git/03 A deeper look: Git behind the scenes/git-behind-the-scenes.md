@@ -70,6 +70,8 @@ Let's say our collaborators Anna and Wolfgang have been busy and our git tree cu
 
 In this example, we have merged the branch "articles-on-animals-from-list" into "main" and the commit `2cca46a` is a merge commit. `98369a7` ("Add a house cat") is the first commit and has no parent, and all other commits in between have only one parent. The commits `0a6ebca` and `b6eb6d0` have the same parent, but they only have one parent.
 
+If you also want to look at the same commit data as me in this article, you can clone my `git-encyclopedia-example` project [on GitHub](https://github.com/s-heins/git-encyclopedia-example) by running `git clone https://github.com/s-heins/git-encyclopedia-example.git` (to clone via HTTPS).
+
 To look at `commit` metadata, we can use `git cat-file -p`, where `-p` lets us pretty-print the object's content.
 I'm saying object because git stores multiple pieces of information as objects – such as `blob` objects for files, `commit` objects, and `tree` objects which allow us to reference other `tree` objects and `blob` objects to model a file tree. (Any children `tree` objects would then represent folders and `blob` objects would be files). To read more about this, see [this article in the git pro book](https://git-scm.com/book/en/v2/Git-Internals-Git-Objects).
 
