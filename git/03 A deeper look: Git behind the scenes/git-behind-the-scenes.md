@@ -83,9 +83,18 @@ As mentioned in the [first article](https://dev.to/sheins/-a-practical-introduct
 
 ![Initializing the repository creates a hidden `.git` folder](initialize-git.png)
 
-We can now find all our commits in the `objects` folder within the `.git` folder. Git saves these objects in folders that carry the first two characters of the object hash. The rest of the characters are used as the file name within that folder. For example, our commit `2cca46a` is really called `2cca46ab8626e867e2994cac12eb97887b0a82a2` in full. It will be contained in a file within the `2c` folder inside the `objects` folder, and this file will be called `ca46ab8626e867e2994cac12eb97887b0a82a2`.
+We can now find all our commits in the `objects` folder within the `.git` folder. Git saves these objects in folders that carry the first two characters of the object hash. The rest of the characters are used as the file name within that folder. For example, our commit `2cca46a` is really called `2cca46ab8626e867e2994cac12eb97887b0a82a2` in full but it is enough to use the short name because there are no other git objects whose name also starts with `2cca46a`. The information for this commit will be contained in a file within the `2c` folder inside the `objects` folder, and this file will be called `ca46ab8626e867e2994cac12eb97887b0a82a2`.
 
 ![Looking at a git commit file inside the objects folder](git-commit-object.png)
+
+## References: Nicknames for your commits
+
+In case you want to work together with someone, you could always send them the name of your latest commit and they could check that out. That would be a lot of hassle, however, since you would have to keep messaging them any time you make a change, and they would need to check their messages constantly.
+To make things a lot easier, we can refer to a line of work with branches. Behind the scenes, a branch is just a reference to a commit with the added bonus that if you add a child to this commit, the reference gets advanced to this latest commit. The commit the reference points to then carries information about its parent commits but the branch itself is just a pointer to the latest commit, the so-called **head**.
+
+Git saves all information about references in the `refs` folder. Any references for our remotes are contained within `.git/refs/remotes/origin`. As we can also see in our git tree visualization in the command line, `main` points to `75616f3`, the `ENC-003` reference points to `f82574d`, and the `ENC-002` reference points to `94a47c8`.
+
+![Git tree and branch references](tree-and-remote-refs.png)
 
 ## Exploring the .git folder
 
