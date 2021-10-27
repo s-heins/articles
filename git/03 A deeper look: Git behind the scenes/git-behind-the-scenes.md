@@ -53,12 +53,14 @@ A **commit** then stores some meta information and a **pointer** to that root tr
 
 Commit metadata includes:
 
-* author of the commit
-* the committer
+* author of the commit (i.e. the person that wrote or changed the respective lines)
+* the committer (the person who committed the work of the author)
 * the parent of the commit (if applicable) – this is a pointer to a commit hash
 
-Since every commit contains a reference to its parent (if it has one), we can think of commits as a linked list where each commit has between zero and two parents.
-If it has zero, it is the very first commit. If it has two, it is a merge commit, and if it has one, it is a "normal" commit.
+In the example further below, we will see when author and committer can differ: For the merge commit we're going to be looking at, I am the author but GitHub committed for me since I executed the merge on the GitHub UI. Another example would be if someone *rebases* my commits on top of another parent. That means that they will take my work and replay it on top of another parent than the one I used originally. We will focus on such advanced git maneuvers in a subsequent article.
+
+Since every commit contains a reference to its parent (if it has one), we can think of commits as a linked list. If a commit has more than one parent, it is a merge commit. Usually, two branches would be merged so that the resulting commit would have two parents but it is also possible (albeit unusual) to merge more than two branches.
+If a commit has zero parents, it is the very first commit. If it has two (or more), it is a merge commit, and if it has one, it is a "normal" commit.
 
 Let's say our collaborators Anna and Wolfgang have been busy and our git tree currently looks like this:
 
@@ -76,7 +78,7 @@ In this example, we have merged the branch "articles-on-animals-from-list" into 
 If you also want to look at the same commit data as me in this article, you can clone my `git-encyclopedia-example` project [on GitHub](https://github.com/s-heins/git-encyclopedia-example) by running `git clone https://github.com/s-heins/git-encyclopedia-example.git` (to clone via HTTPS).
 
 To look at `commit` metadata, we can use `git cat-file -p`, where `-p` lets us pretty-print the object's content.
-I'm saying object because git stores multiple pieces of information as objects – such as `blob` objects for files, `commit` objects, and `tree` objects which allow us to reference other `tree` objects and `blob` objects to model a file tree. (Any children `tree` objects would then represent folders and `blob` objects would be files). To read more about this, see [this article in the git pro book](https://git-scm.com/book/en/v2/Git-Internals-Git-Objects).
+I'm saying "object" because git stores multiple pieces of information as objects – such as `blob` objects for files, `commit` objects, and `tree` objects which allow us to reference other `tree` objects and `blob` objects to model a file tree. (Any children `tree` objects would then represent folders and `blob` objects would be files). To read more about this, see [this article in the git pro book](https://git-scm.com/book/en/v2/Git-Internals-Git-Objects).
 
 We can use `git cat-file -p` to look at our merge commit, `2cca46a` for example:
 
