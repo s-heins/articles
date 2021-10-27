@@ -24,6 +24,7 @@
    * Seeing and managing changes
      * git diff
      * interactive adding
+     * ignoring files: .gitignore (global / local)
      * using a commit template
      * amending
 1. A deeper look: How does git work behind the scenes?
