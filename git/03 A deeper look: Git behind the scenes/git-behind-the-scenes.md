@@ -15,36 +15,39 @@ To do this, git computes a SHA-1 hash value based on the contents for each file 
 
 If the contents of a file have changed, the name will be the same but its hash will be different.
 
-In case a file has not changed at all in a commit, git will not store the file itself again, just a link to the one it has already saved.
+In case a file has not changed at all in a commit, git will not store the file itself again, just a link to the one it has already saved in a previous snapshot.
 
-## The three states of git
+## File status lifecycle and git project sections
 
-In the first article, we have already added and committed files and file changes. Git knows three states: **modified**, **staged**, and **committed**.
+In the first article, we have already added and committed files and file changes. Git knows three states for any file it already knows about: **modified**, **staged**, and **committed**. It then also has a fourth state for any files it doesn't know about: **untracked**.
+Let's now look at what different states a file is in, from its creation, adding it, and finally committing it. We will use `git status` to check which status our file is in.
 
 ![Different git states when creating, adding, and committing a file](git-states.png)
 
+As a file goes through its lifecycle, it will also traverse different sections of our git project:
+
 * **Working directory**: After adding `new-file`, the file is present in our directory and **untracked**, that means that we created a new file git doesn't know about yet. Any existing files we change will be in the **modified** state.
 * **Staging area**: After `git add .`, the changes are now marked as **staged**
-* **Repository**: Now we can `git commit` the changes and they will be added to our `.git` repository as **committed**
+* **Repository**: After we `git commit` our changes, they will be added to our `.git` repository as **committed**
 
-## File status lifecycle
+We can now look at the file states with regards to sections in the project:
 
 * **Untracked** (Working Directory)
-  Files that are not in the staging area and not in your last snapshot (= commit), i.e. files that git doesn't yet know about
-* **Unmodified** (Working Directory)
-  Files that have not changed since the last snapshot
+  Files that are not in the staging area and not in your last snapshot (= commit), i.e. files that git doesn't yet know about.
 * **Modified** (Working Directory)
-  Files that have been modified since the last snapshot
+  Files that have been modified since the last commit.
 * **Staged** (Staging Area)
-  Files that were added to the Staging area by `git add`ing them.
+  Untracked or modified files that were added to the Staging area by `git add`ing them.
+* **Committed** (Repository)
+  Files that were committed to the repository by running `git commit` after they were moved to the staging area.  
 
-File status can be checked by running `git status`.
+Any committed files will move back to the *modified* state after we have changed them, and from there, they can move through the lifecycle again. Any unmodified files will still be in the *committed* state, so safely stored in your git database (so your local `.git` folder and, if you have set up a remote and pushed your commit to it, also in your upstream repository).
 
-If you want to skip the staging area, you can use `git commit -a` so that git will commit all tracked files without you having to `add` them first. This does not work for previously untracked files, however.
+If you have any modified files for which you want to skip the staging area, you can run `git commit -a` so that git will commit all tracked files without you having to `add` them first. This does not work for any untracked files, however.
 
 ## Anatomy of a commit
 
-As discussed before, git stores **snapshots**. Specifically, git stores files as `blobs` (binary large objects) within git, and their checksums. Then, it builds a **tree object** (the root project tree) that models the directory structure.
+As discussed before, git stores **snapshots**. Specifically, git stores files as `blobs` (binary large objects) within git, as well as the checksums of their file contents and header. Then, it builds a **tree object** (the root project tree) that models the directory structure.
 
 A **commit** then stores some meta information and a **pointer** to that root tree.
 
