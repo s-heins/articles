@@ -78,7 +78,14 @@ In this example, we have merged the branch "articles-on-animals-from-list" into 
 If you also want to look at the same commit data as me in this article, you can clone my `git-encyclopedia-example` project [on GitHub](https://github.com/s-heins/git-encyclopedia-example) by running `git clone https://github.com/s-heins/git-encyclopedia-example.git` (to clone via HTTPS).
 
 To look at `commit` metadata, we can use `git cat-file -p`, where `-p` lets us pretty-print the object's content.
-I'm saying "object" because git stores multiple pieces of information as objects – such as `blob` objects for files, `commit` objects, and `tree` objects which allow us to reference other `tree` objects and `blob` objects to model a file tree. (Any children `tree` objects would then represent folders and `blob` objects would be files). To read more about this, see [this article in the git pro book](https://git-scm.com/book/en/v2/Git-Internals-Git-Objects).
+I'm saying "object" because git stores multiple pieces of information as objects – such as `blob` objects for files, `commit` objects, and `tree` objects which allow us to reference other `tree` objects and `blob` objects to model a file tree. (Any children `tree` objects would then represent folders and `blob` objects would be files). To read more about this, see [this article in the git pro book](https://git-scm.com/book/en/v2/Git-Internals-Git-Objects). The fourth type of git object are *tags* which we will discuss soon when we talk about *references* in git.
+
+Types of git objects:
+
+* blob
+* commit
+* tree
+* tag
 
 We can use `git cat-file -p` to look at our merge commit, `2cca46a` for example:
 
@@ -114,15 +121,32 @@ When we merge this branch to main then, git will create a merge commit that has 
 
 ### Tags
 
+Tags are very similar to branches in that they *reference a commit*. However, while a branch reference auto-advances when you push a new commit on top of the one that the branch currently points to, tags stay fixed.
+
+This is handy if you work with releases for your software and you want to mark a certain commit as a specific version. Then, it would be rather annoying if your tag kept moving as you added more commits; you'd have no way of finding out which commit was associated with your release for version 1.2.4, for example.  
+
+To add a tag to your commit, run `git tag -a "your tag name"`. Afterwards, git will open your default CLI text editor such as nano or vim to let you write a tag message.
+
+![Adding a tag to a commit](tag-a-commit-with-message.png)
+
+After we have added the tag, we can now add more commits on top and we can see that while the branch reference has moved, the tag reference has not.
+
+![Adding a commit on top of a tagged commit](tag-reference-fixed.png)
+
+To learn more about tags and other references, have a look in [chapter 10.3](https://git-scm.com/book/en/v2/Git-Internals-Git-References#tags) of the git pro book.
+
 ### HEAD
 
-Before we mentioned that the latest branch in a commit is also called a head. If we have currently checked out this latest commit in our branch, there is a shorthand, another nickname, with which we can refer to this commit: `HEAD`. So instead of using `git push origin ENC-002_capital-cities-in-europe`, we can also do this if you have currently checked out our branch `ENC-002…` and we want to push it to our upstream repo:
+Before, we mentioned that the latest branch in a commit is also called a head. Git stores information on the currently checked out commit or reference in the `HEAD` file within the `.git` folder. In case we currently have a branch checked out, head will refer to this branch, so `HEAD` will be a reference to our branch reference.
+We can also use `HEAD` within git to refer to our branch. So instead of using `git push origin ENC-002_capital-cities-in-europe`, we can also run this following command if we have currently checked out our branch `ENC-002…` and we want to push it to our upstream repo:
 
 ```shell
 git push -u origin HEAD
 ```
 
-The `-u` flag is a shorthand for `--set-upstream` which tells git to add our local branch to the upstream repository. Afterwards, we specify our remote repository that git should push to. In most cases this will be called `origin` and in ours as well because we told git to call our upstream "origin" that when we ran `git remote add origin <repository-address>`. Finally, `HEAD` is our pointer that points to our branch reference which in turn points to our latest commit if this is the commit we have currently checked out.
+The `-u` flag is a shorthand for `--set-upstream` which tells git to add our local branch to the upstream repository. Afterwards, we specify our remote repository that git should push to. In most cases this will be called `origin`; in our repo it is also called origin because we told git to call our upstream "origin" when we ran `git remote add origin <repository-address>`.
+Finally, `HEAD` is our pointer that points to our branch reference which in turn points to our latest commit if this is the commit we have currently checked out.
+Git will now create a branch on origin which is called the same as our local branch and point to the same commit.
 
 In the background, git stores information on HEAD in the `.git/HEAD` file. When we run `cat .git/HEAD`, git tells us that our `HEAD` is a reference which points to another reference, namely `ENC-002…`.
 
@@ -130,8 +154,18 @@ In the background, git stores information on HEAD in the `.git/HEAD` file. When 
 
 ### Don't lose your HEAD – Detached HEAD state
 
-Most of the time, `HEAD` will point to the latest commit in a branch but there is also such a thing as **detached HEAD state** where `HEAD` will point to a commit which is not the head of a branch. You move into detached head state by checking out a commit that no branch reference points to and you can move out of it again by either creating a new branch (whose head reference will then point to this commit), or by checking out an existing branch.
+Most of the time, `HEAD` will point to a branch reference which points to the latest commit in a branch but there is also such a thing as **detached HEAD state** where `HEAD` will point to a commit which is not the head of a branch. You move into detached head state by checking out a commit that no branch reference points to and you can move out of it again by either creating a new branch (whose reference will then point to this commit), or by checking out an existing branch.
+
+In the following example, I checked out a previous commit that was not the head of any branch, added and committed a file and created a new branch to move out of detached head state again.
+
+![Getting out of detached head state](moving-out-of-detached-head-state.png)
 
 ## Conclusion and command summary
 
-In this article, we looked at the different file states (unmodified/committed, untracked, modified, and staged). We saw that each commit contains information in its author, committer and parent commit(s) and how git branches work. That branches are just references to a commit, and that the last commit of a branch is called its head. We also got to know a special reference, `HEAD`, which points  
+In this article, we looked at the different file states (unmodified/committed, untracked, modified, and staged). We saw that each commit contains information on its author, committer and parent commit(s) and how git branches work. That a branch is just a reference to a commit, and that the last commit of a branch is called its head. We also got to know a special reference, `HEAD`, which points to a branch reference (which points to a commit) if we are currently on a branch, or a commit if we are in detached HEAD state.
+
+Here are some commands to remember:
+
+* `git commit -am "my commit message"` to commit all modified files without first staging them (does not work for untracked files)
+* `git tag -a "my tag message"` to create an annotated tag, for example if you're working with releases
+* `git push -u origin HEAD` as an alternate way of doing `git push -u origin <my-branch-name>`
