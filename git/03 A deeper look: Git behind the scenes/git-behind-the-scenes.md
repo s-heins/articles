@@ -94,17 +94,44 @@ We can now find all our commits in the `objects` folder within the `.git` folder
 
 ![Looking at a git commit file inside the objects folder](git-commit-object.png)
 
-## References: Nicknames for your commits
+## References
+
+Like in programming, git references point to other things. This could be a commit if we're talking about a branch reference or a tag, or it could be another reference.
+
+### Branches
 
 In case you want to work together with someone, you could always send them the name of your latest commit and they could check that out. That would be a lot of hassle, however, since you would have to keep messaging them any time you make a change, and they would need to check their messages constantly.
-To make things a lot easier, we can refer to a line of work with branches. Behind the scenes, a branch is just a reference to a commit with the added bonus that if you add a child to this commit, the reference gets advanced to this latest commit. The commit the reference points to then carries information about its parent commits but the branch itself is just a pointer to the latest commit, the so-called **head**.
+To make things a lot easier, we can refer to a line of work with branches. Behind the scenes, a branch is just a reference to a commit with the added bonus that if you add a child to this commit, the reference gets advanced to this latest commit. The commit the reference points to then carries information about its parent commits but the branch itself is just a pointer to the latest commit, the so-called **head**. That means that git just infers which commits belong to a branch based on the commit the branch points to and its parents. Git can show us where our branch diverged from main by going backward from the head to its parents and showing us those commits which are not contained in the main branch, i.e. which are not the commit that the main branch points to nor parents of it.
 
 Git saves all information about references in the `refs` folder. Any references for our remotes are contained within `.git/refs/remotes/origin`. As we can also see in our git tree visualization in the command line, `main` points to `75616f3`, the `ENC-003` reference points to `f82574d`, and the `ENC-002` reference points to `94a47c8`.
 
 ![Git tree and branch references](tree-and-remote-refs.png)
 
-## Exploring the .git folder
+If we look at just the commits in our branch and compare them to the graph view, we can see that our `ENC-002` branch and `main` share a few commits (orange in the screenshot) and they also have some commits that only belong only to them (green in the screenshot). In the tree view above it might seem like `ENC-002` only began with commit `b6eb6d0 (Add article on Tirana in Albania)` but really, it contains all commits that came before.
+When we merge this branch to main then, git will create a merge commit that has the latest branch commit and the latest main commit as parents as we can see in our example in the merge commit `2ca46a (Merge pull request #1…)`.
 
-This is what the content of the hidden git folder looks like on the top level:
+![Git log of commits for each branch](log-branch-commits.png)
 
-![Contents of the hidden git folder at the top level](toplevel-hidden-git-folder.png)
+### Tags
+
+### HEAD
+
+Before we mentioned that the latest branch in a commit is also called a head. If we have currently checked out this latest commit in our branch, there is a shorthand, another nickname, with which we can refer to this commit: `HEAD`. So instead of using `git push origin ENC-002_capital-cities-in-europe`, we can also do this if you have currently checked out our branch `ENC-002…` and we want to push it to our upstream repo:
+
+```shell
+git push -u origin HEAD
+```
+
+The `-u` flag is a shorthand for `--set-upstream` which tells git to add our local branch to the upstream repository. Afterwards, we specify our remote repository that git should push to. In most cases this will be called `origin` and in ours as well because we told git to call our upstream "origin" that when we ran `git remote add origin <repository-address>`. Finally, `HEAD` is our pointer that points to our branch reference which in turn points to our latest commit if this is the commit we have currently checked out.
+
+In the background, git stores information on HEAD in the `.git/HEAD` file. When we run `cat .git/HEAD`, git tells us that our `HEAD` is a reference which points to another reference, namely `ENC-002…`.
+
+![Git tells us which branch HEAD points to when we look at the HEAD file in the .git folder](HEAD-information.png)
+
+### Don't lose your HEAD – Detached HEAD state
+
+Most of the time, `HEAD` will point to the latest commit in a branch but there is also such a thing as **detached HEAD state** where `HEAD` will point to a commit which is not the head of a branch. You move into detached head state by checking out a commit that no branch reference points to and you can move out of it again by either creating a new branch (whose head reference will then point to this commit), or by checking out an existing branch.
+
+## Conclusion and command summary
+
+In this article, we looked at the different file states (unmodified/committed, untracked, modified, and staged). We saw that each commit contains information in its author, committer and parent commit(s) and how git branches work. That branches are just references to a commit, and that the last commit of a branch is called its head. We also got to know a special reference, `HEAD`, which points  
