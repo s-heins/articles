@@ -7,6 +7,18 @@ Now that we have gained some overview over the basic functions of git, it is tim
 
 As a resource for this article, I have used the [Pro Git book, written by Scott Chacon and Ben Straub](https://git-scm.com/book/en/v2) which is available for free and may be shared non-commercially.
 
+- [A deeper look: Git behind the scenes](#a-deeper-look-git-behind-the-scenes)
+  - [How does git know a file has changed?](#how-does-git-know-a-file-has-changed)
+  - [File status lifecycle and git project sections](#file-status-lifecycle-and-git-project-sections)
+  - [Anatomy of a commit](#anatomy-of-a-commit)
+  - [Back to the start – creating a repository](#back-to-the-start--creating-a-repository)
+  - [References](#references)
+    - [Branches](#branches)
+    - [Tags](#tags)
+    - [HEAD](#head)
+    - [Detached HEAD state](#detached-head-state)
+  - [Conclusion and command summary](#conclusion-and-command-summary)
+
 ## How does git know a file has changed?
 
 Git does not store the exact differences between files (for example, add the line "house cat" to your file "list-of-animals-to-write-about"), but rather, it stores **snapshots**. So it would have a snapshot of the file before adding that line and then compare that to the current version of the file to figure out if something has changed.
