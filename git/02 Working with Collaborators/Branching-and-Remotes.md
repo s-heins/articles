@@ -6,6 +6,20 @@ In this article, we will have a look at how to work with remotes in order to wor
 
 (Cover image by [fabrizio turco](https://freeimages.com/photographer/zirak-34282) from [FreeImages](https://freeimages.com))
 
+- [Branching and working with remotes](#branching-and-working-with-remotes)
+  - [Recap](#recap)
+  - [Working with remotes](#working-with-remotes)
+    - [Creating a remote repository](#creating-a-remote-repository)
+    - [Pushing our existing changes to the remote](#pushing-our-existing-changes-to-the-remote)
+    - [Cloning a remote](#cloning-a-remote)
+  - [Branching](#branching)
+    - [Creating a new branch](#creating-a-new-branch)
+    - [Pushing a new branch to origin](#pushing-a-new-branch-to-origin)
+  - [Resolving conflicts](#resolving-conflicts)
+  - [Merging and deleting branches from the console](#merging-and-deleting-branches-from-the-console)
+  - [Merging and deleting branches from the GitHub UI](#merging-and-deleting-branches-from-the-github-ui)
+  - [Conclusion and command summary](#conclusion-and-command-summary)
+
 ## Recap
 
 In the [Introduction article](https://dev.to/sheins/-a-practical-introduction-to-git-jumping-in-with-both-feet-2o56), we looked at how to set up a local git repository, how to configure git and create aliases, and how to add and commit files on the example of creating an encyclopedia with articles and a list of topics to write about. We have also added some aliases to our gitconfig file at `~/.gitconfig`, such as this one that lets us print a neat-looking tree in the command line to show us the git history. I'm adding it here again since we will keep using it throughout this article.

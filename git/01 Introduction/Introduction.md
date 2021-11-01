@@ -11,6 +11,18 @@ This will be the first article in a series and it will tell you how to set up yo
 
 (Cover image by [Nerry Burg](https://freeimages.com/photographer/nexxy-42715) from [FreeImages](https://freeimages.com))
 
+- [A practical introduction to git – jumping in with both feet](#a-practical-introduction-to-git--jumping-in-with-both-feet)
+	- [Why version control?](#why-version-control)
+	- [Your task](#your-task)
+	- [Setup](#setup)
+		- [Initializing your git repository](#initializing-your-git-repository)
+		- [Configure](#configure)
+	- [Getting started on content](#getting-started-on-content)
+		- [Adding files](#adding-files)
+		- [Git aliases](#git-aliases)
+	- [Outlook: Working with remotes and branches](#outlook-working-with-remotes-and-branches)
+	- [Conclusion and command summary](#conclusion-and-command-summary)
+
 ## Why version control?
 
 If you add some files or change their contents, you'll want to have a way to save your progress. The difference between having the file in a version control system such as git rather than just saving it on your hard drive is that you have a history of the file along with additional metadata – you could revert back to an old version if you wanted to, look at exactly which changes were introduced when, by whom, and, if they wrote a meaningful message, why they did those changes.
