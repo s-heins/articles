@@ -3,7 +3,7 @@
 In the [first article](https://dev.to/sheins/-a-practical-introduction-to-git-jumping-in-with-both-feet-2o56), we have looked at how to initialize a git repo locally, add and commit, and set some configuration options.
 Next, the second article covered how to work with remotes and branches, how to resolve conflicts, and how to merge and delete branches both from the CLI or from the GitHub UI.
 
-Now that we have gained some overview over the basic functions of git, it is time for an excursion into how git works behind the scenes. How does git notice that a file has changed so that it can show us this in our status? How does git realize branches? How does git know the order of the commits in each branch?
+Now that we have gained some overview over the basic functions of git, it is time for an excursion into how git works behind the scenes. How does git notice that a file has changed so that it can show us this in our status? How does git realize branches? How does git know the order of the commits in each branch? What is HEAD and what is this mysterious detached HEAD state? And most importantly, how do I get out of this thing again?
 
 As a resource for this article, I have used the [Pro Git book, written by Scott Chacon and Ben Straub](https://git-scm.com/book/en/v2) which is available for free and may be shared non-commercially.
 
@@ -24,11 +24,11 @@ Let's now look at what different states a file is in, from its creation, adding 
 
 ![Different git states when creating, adding, and committing a file](git-states.png)
 
-As a file goes through its lifecycle, it will also traverse different sections of our git project:
+As a file goes through its lifecycle, it will also travel through different sections of our git project:
 
 * **Working directory**: After adding `new-file`, the file is present in our directory and **untracked**, that means that we created a new file git doesn't know about yet. Any existing files we change will be in the **modified** state.
-* **Staging area**: After `git add .`, the changes are now marked as **staged**
-* **Repository**: After we `git commit` our changes, they will be added to our `.git` repository as **committed**
+* **Staging area**: After `git add .`, the changes are now marked as **staged** and are in the staging area.
+* **Repository**: After we `git commit` our changes, they will be added to our local `.git` repository as **committed**
 
 We can now look at the file states with regards to sections in the project:
 
@@ -78,7 +78,7 @@ In this example, we have merged the branch "articles-on-animals-from-list" into 
 If you also want to look at the same commit data as me in this article, you can clone my `git-encyclopedia-example` project [on GitHub](https://github.com/s-heins/git-encyclopedia-example) by running `git clone https://github.com/s-heins/git-encyclopedia-example.git` (to clone via HTTPS).
 
 To look at `commit` metadata, we can use `git cat-file -p`, where `-p` lets us pretty-print the object's content.
-I'm saying "object" because git stores multiple pieces of information as objects – such as `blob` objects for files, `commit` objects, and `tree` objects which allow us to reference other `tree` objects and `blob` objects to model a file tree. (Any children `tree` objects would then represent folders and `blob` objects would be files). To read more about this, see [this article in the git pro book](https://git-scm.com/book/en/v2/Git-Internals-Git-Objects). The fourth type of git object are *tags* which we will discuss soon when we talk about *references* in git.
+I'm saying "object" because git stores multiple pieces of information as objects – such as `blob` objects for files, `commit` objects, and `tree` objects which allow us to reference other `tree` objects and `blob` objects to model a file tree. (Any children `tree` objects would then represent folders and `blob` objects would be files). To read more about this, see [chapter 10.2 in the pro git book](https://git-scm.com/book/en/v2/Git-Internals-Git-Objects). The fourth type of git objects are *tags* which we will discuss soon when we talk about *references* in git.
 
 Types of git objects:
 
@@ -87,7 +87,7 @@ Types of git objects:
 * tree
 * tag
 
-We can use `git cat-file -p` to look at our merge commit, `2cca46a` for example:
+We can use `git cat-file -p` to look at our merge commit, `2cca46a` for example, where we will see that it has two parents and what their commit hashes are. As mentioned before, we can also see that in this case, author and committer are different.
 
 ![Using git cat-file -p to look at commit metadata](git-cat-file-on-commit.png)
 
@@ -97,7 +97,7 @@ As mentioned in the [first article](https://dev.to/sheins/-a-practical-introduct
 
 ![Initializing the repository creates a hidden `.git` folder](initialize-git.png)
 
-We can now find all our commits in the `objects` folder within the `.git` folder. Git saves these objects in folders that carry the first two characters of the object hash. The rest of the characters are used as the file name within that folder. For example, our commit `2cca46a` is really called `2cca46ab8626e867e2994cac12eb97887b0a82a2` in full but it is enough to use the short name because there are no other git objects whose name also starts with `2cca46a`. The information for this commit will be contained in a file within the `2c` folder inside the `objects` folder, and this file will be called `ca46ab8626e867e2994cac12eb97887b0a82a2`.
+We can now find all our commits in the `objects` folder within the `.git` folder. Git saves these objects in folders that carry the first two characters of the object hash. The rest of the characters are used as the file name within that folder. For example, our commit `2cca46a` which we looked at with `cat-file` is really called `2cca46ab8626e867e2994cac12eb97887b0a82a2` in full but it is enough to use the short name because there are no other git objects whose name also starts with `2cca46a`. The information for this commit will be contained in a file within the `2c` folder inside the `objects` folder, and this file will be called `ca46ab8626e867e2994cac12eb97887b0a82a2`.
 
 ![Looking at a git commit file inside the objects folder](git-commit-object.png)
 
@@ -107,10 +107,11 @@ Like in programming, git references point to other things. This could be a commi
 
 ### Branches
 
-In case you want to work together with someone, you could always send them the name of your latest commit and they could check that out. That would be a lot of hassle, however, since you would have to keep messaging them any time you make a change, and they would need to check their messages constantly.
-To make things a lot easier, we can refer to a line of work with branches. Behind the scenes, a branch is just a reference to a commit with the added bonus that if you add a child to this commit, the reference gets advanced to this latest commit. The commit the reference points to then carries information about its parent commits but the branch itself is just a pointer to the latest commit, the so-called **head**. That means that git just infers which commits belong to a branch based on the commit the branch points to and its parents. Git can show us where our branch diverged from main by going backward from the head to its parents and showing us those commits which are not contained in the main branch, i.e. which are not the commit that the main branch points to nor parents of it.
+In case you want to work together with someone, you could always send them the name of your latest commit and they could then check out that commit. That would be a lot of hassle, however, since you would have to keep messaging them any time you make a change, and they would need to check their messages constantly. At this rate, no one would want to work with us on any projects and the world would be a sad place.
 
-Git saves all information about references in the `refs` folder. Any references for our remotes are contained within `.git/refs/remotes/origin`. As we can also see in our git tree visualization in the command line, `main` points to `75616f3`, the `ENC-003` reference points to `f82574d`, and the `ENC-002` reference points to `94a47c8`.
+To make things a lot easier, we can refer to a line of work with branches. Behind the scenes, a branch is just a reference to a commit with the added bonus that if you add a child to this commit, the reference gets advanced to this latest commit. The commit the reference points to then carries information about its parent commits but the branch itself is just a pointer to the latest commit, the so-called **head**. That means that git just infers which commits belong to a branch based on the commit the branch points to and its parent(s) and their parent(s). Git can show us where our branch diverged from main by going backward from the head to its parents and showing us those commits which are not contained in the main branch, i.e. which are not the commit that the main branch points to nor parents of it.
+
+Git saves all information about references in the `refs` folder. Any references for our remotes are contained within `.git/refs/remotes/origin`. As we can also see in our git tree visualization in the command line, `main` points to `75616f3`, the `ENC-003…` reference points to `f82574d`, and the `ENC-002…` reference points to `94a47c8`.
 
 ![Git tree and branch references](tree-and-remote-refs.png)
 
@@ -145,14 +146,14 @@ git push -u origin HEAD
 ```
 
 The `-u` flag is a shorthand for `--set-upstream` which tells git to add our local branch to the upstream repository. Afterwards, we specify our remote repository that git should push to. In most cases this will be called `origin`; in our repo it is also called origin because we told git to call our upstream "origin" when we ran `git remote add origin <repository-address>`.
-Finally, `HEAD` is our pointer that points to our branch reference which in turn points to our latest commit if this is the commit we have currently checked out.
-Git will now create a branch on origin which is called the same as our local branch and point to the same commit.
+Finally, `HEAD` is our pointer that points to our branch reference which in turn points to our latest commit (if we have currently checked out a branch).
+Git will now create a branch on origin which is called the same as our local branch and points to the same commit.
 
 In the background, git stores information on HEAD in the `.git/HEAD` file. When we run `cat .git/HEAD`, git tells us that our `HEAD` is a reference which points to another reference, namely `ENC-002…`.
 
 ![Git tells us which branch HEAD points to when we look at the HEAD file in the .git folder](HEAD-information.png)
 
-### Don't lose your HEAD – Detached HEAD state
+### Detached HEAD state
 
 Most of the time, `HEAD` will point to a branch reference which points to the latest commit in a branch but there is also such a thing as **detached HEAD state** where `HEAD` will point to a commit which is not the head of a branch. You move into detached head state by checking out a commit that no branch reference points to and you can move out of it again by either creating a new branch (whose reference will then point to this commit), or by checking out an existing branch.
 
