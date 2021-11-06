@@ -3,9 +3,11 @@
 In the [first article](https://dev.to/sheins/-a-practical-introduction-to-git-jumping-in-with-both-feet-2o56), we have looked at how to initialize a git repo locally, add and commit, and set some configuration options.
 Next, the second article covered how to work with remotes and branches, how to resolve conflicts, and how to merge and delete branches both from the CLI or from the GitHub UI.
 
-Now that we have gained some overview over the basic functions of git, it is time for an excursion into how git works behind the scenes. How does git notice that a file has changed so that it can show us this in our status? How does git realize branches? How does git know the order of the commits in each branch? What is HEAD and what is this mysterious detached HEAD state? And most importantly, how do I get out of this thing again?
+Now that we have gained some overview over the basic functions of git, it is time for an excursion into some basics on how git works behind the scenes. How does git notice that a file has changed so that it can show us this in our status? How does git realize branches? How does git know the order of the commits in each branch? What is HEAD and what is this mysterious detached HEAD state? And most importantly, how do I get out of this thing again?
 
 As a resource for this article, I have used the [Pro Git book, written by Scott Chacon and Ben Straub](https://git-scm.com/book/en/v2) which is available for free and may be shared non-commercially.
+
+Because the details of how git works exactly can easily make up a book (as seen above), we will only look deeply enough in this article to set the stage for more advances git maneuvers such as rebasing, where you replay your work on top of a different commit than the one you originally set out from, and give some context to the commands we have covered in the first two articles.
 
 - [A deeper look: Git behind the scenes](#a-deeper-look-git-behind-the-scenes)
   - [How does git know a file has changed?](#how-does-git-know-a-file-has-changed)
@@ -21,7 +23,7 @@ As a resource for this article, I have used the [Pro Git book, written by Scott 
 
 ## How does git know a file has changed?
 
-Git does not store the exact differences between files (for example, add the line "house cat" to your file "list-of-animals-to-write-about"), but rather, it stores **snapshots**. So it would have a snapshot of the file before adding that line and then compare that to the current version of the file to figure out if something has changed.
+Git does not store the exact differences between files (for example, add the line "house cat" to your file "list-of-animals-to-write-about"), but rather, it stores **snapshots**. For this example, git has a snapshot of the file before adding that line and then compare it to the current version of the file to figure out if something has changed.
 
 To do this, git computes a SHA-1 hash value based on the contents for each file and uses it for checksumming. SHA-1 is a cryptographic hash function that makes it highly unlikely to create the same hash for two different files, so if the hash is the same, we can assume that it was created based on the same input. If the checksum of a file has changed, the file itself must have changed. If a file was deleted and another was added but they share the same checksum, they must have the same contents – this is how git knows that a file was renamed.
 
@@ -90,7 +92,7 @@ In this example, we have merged the branch "articles-on-animals-from-list" into 
 If you also want to look at the same commit data as me in this article, you can clone my `git-encyclopedia-example` project [on GitHub](https://github.com/s-heins/git-encyclopedia-example) by running `git clone https://github.com/s-heins/git-encyclopedia-example.git` (to clone via HTTPS).
 
 To look at `commit` metadata, we can use `git cat-file -p`, where `-p` lets us pretty-print the object's content.
-I'm saying "object" because git stores multiple pieces of information as objects – such as `blob` objects for files, `commit` objects, and `tree` objects which allow us to reference other `tree` objects and `blob` objects to model a file tree. (Any children `tree` objects would then represent folders and `blob` objects would be files). To read more about this, see [chapter 10.2 in the pro git book](https://git-scm.com/book/en/v2/Git-Internals-Git-Objects). The fourth type of git objects are *tags* which we will discuss soon when we talk about *references* in git.
+I'm saying "object" because git stores multiple pieces of information as objects – such as `blob` objects for files, `commit` objects, and `tree` objects which allow us to reference other `tree` objects and `blob` objects to model a file tree. (Any children `tree` objects would then represent folders and `blob` objects would be files). To read more about this, see [chapter 10.2 in the pro git book](https://git-scm.com/book/en/v2/Git-Internals-Git-Objects). The fourth type of git objects are annotated *tags* which we will discuss soon when we talk about *references* in git.
 
 Types of git objects:
 
@@ -102,6 +104,78 @@ Types of git objects:
 We can use `git cat-file -p` to look at our merge commit, `2cca46a` for example, where we will see that it has two parents and what their commit hashes are. As mentioned before, we can also see that in this case, author and committer are different.
 
 ![Using git cat-file -p to look at commit metadata](git-cat-file-on-commit.png)
+
+When git gave us some information about our commit before, it not only included information on the parent commit hashes, the author, and committer, but it also listed an object hash for the root tree that models the directory structure.
+
+From this tree, we can look at the different sub-trees (subdirectories) and files with the command `git ls-tree -rt`, where the `-r` flag will recurse into subdirectories and the `-t` flag will include trees when recursing.
+
+```shell
+$ git ls-tree -rt 240e206
+
+100644 blob e69de29bb2d1d6434b8b29ae775ad8c2e48c5391	alligator
+100644 blob 4b92c463e35f265b9b43f5beebc9e02df815efb2	animals-to-write-about
+100644 blob e69de29bb2d1d6434b8b29ae775ad8c2e48c5391	chimpanzee
+100644 blob e69de29bb2d1d6434b8b29ae775ad8c2e48c5391	crocodile
+100644 blob e69de29bb2d1d6434b8b29ae775ad8c2e48c5391	elephant
+100644 blob e69de29bb2d1d6434b8b29ae775ad8c2e48c5391	giraffe
+100644 blob e69de29bb2d1d6434b8b29ae775ad8c2e48c5391	gorilla
+100644 blob 3be11c69355948412925fa5e073d76d58ff3afd2	house-cat.md
+100644 blob e69de29bb2d1d6434b8b29ae775ad8c2e48c5391	tiger.md
+```
+
+In our example, we do not have any directories yet, so git only lists blob objects here.
+So let's move all of Wolfgang's articles into a travel directory and look at the tree again.
+
+```shell
+$ git commit -m 'Move cities articles into travel subdirectory'
+
+[ENC-002_capital-cities-in-europe cafdadd] Move cities articles into travel subdirectory
+ 4 files changed, 0 insertions(+), 0 deletions(-)
+ rename albania-tirana.md => travel/albania-tirana.md (100%)
+ rename austria-vienna.md => travel/austria-vienna.md (100%)
+ rename belarus-minsk.md => travel/belarus-minsk.md (100%)
+ rename germany-berlin.md => travel/germany-berlin.md (100%)
+```
+
+With the commit hash that git tells us in the output, `cafdadd`, we can run `git cat-file -p cafdadd` and find out the hash of the root tree, which we can use for the ls-tree command afterwards. To keep the list a bit shorter, we can tell git to abbreviate the object hashes by using the `--abbrev=<digits>` flag.
+
+```shell
+$ git ls-tree -rt --abbrev=7 8ec6421
+
+100644 blob e69de29	alligator
+100644 blob 4b92c46	animals-to-write-about
+100644 blob e69de29	chimpanzee
+100644 blob e69de29	crocodile
+100644 blob e69de29	elephant
+100644 blob e69de29	giraffe
+100644 blob e69de29	gorilla
+100644 blob 3be11c6	house-cat.md
+100644 blob e69de29	tiger.md
+040000 tree ea0789f	travel
+100644 blob e69de29	travel/albania-tirana.md
+100644 blob e69de29	travel/austria-vienna.md
+100644 blob e69de29	travel/belarus-minsk.md
+100644 blob 1038ae6	travel/germany-berlin.md
+```
+
+Since our journalists were a bit lazy here and have not actually added contents to these files, a lot of files share the same object hash (`e69de29`) – they are all empty.
+
+If we do not use the flag to recurse into subtrees, git will show us that the root tree object only contains information on the animal article blob objects and the travel tree object, and not on the travel article blobs. The information about them will be contained in the travel tree, `ea0789f`, so the hierarchy of these objects looks like this:
+
+```shell
+.
+├── commit cafdadd 
+│   └── tree 8ec6421
+│       ├── blob e69de29 alligator
+│       ├── blob 4b92c46 animals-to-write-about
+│       ├── blob e69de29 chimpanzee
+│       ├── # … (other articles on animals)
+│       └── tree ea0789f travel
+│            ├── blob e69de29 albania-tirana.md
+│            ├── blob e69de29 austria-vienna.md 
+│            ├── blob e69de29 belarus-minsk.md 
+│            └── blob 1038ae6 germany-berlin.md 
+```
 
 ## Back to the start – creating a repository
 
