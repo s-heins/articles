@@ -183,6 +183,8 @@ If we do not use the flag to recurse into subtrees, git will show us that the ro
 │            └── blob 1038ae6 germany-berlin.md 
 ```
 
+To find out a bit more on what happens to git objects as we add and commit them, see [this article](https://dev.to/sheins/git-blob-and-tree-objects-during-the-status-lifecycle-1mmd).
+
 ## Back to the start – creating a repository
 
 As mentioned in the [first article](https://dev.to/sheins/-a-practical-introduction-to-git-jumping-in-with-both-feet-2o56), git adds a `.git` folder in your working directory when you run the `git init` command.
