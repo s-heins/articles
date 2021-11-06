@@ -34,6 +34,7 @@ In case a file has not changed at all in a commit, git will not store the file i
 ## File status lifecycle and git project sections
 
 In the first article, we have already added and committed files and file changes. Git knows three states for any file it already knows about: **modified**, **staged**, and **committed**. It then also has a fourth state for any files it doesn't know about: **untracked**.
+
 Let's now look at what different states a file is in, from its creation, adding it, and finally committing it. We will use `git status` to check which status our file is in.
 
 ![Different git states when creating, adding, and committing a file](git-states.png)
@@ -41,7 +42,7 @@ Let's now look at what different states a file is in, from its creation, adding 
 As a file goes through its lifecycle, it will also travel through different sections of our git project:
 
 * **Working directory**: After adding `new-file`, the file is present in our directory and **untracked**, that means that we created a new file git doesn't know about yet. Any existing files we change will be in the **modified** state.
-* **Staging area**: After `git add .`, the changes are now marked as **staged** and are in the staging area.
+* **Staging area**: After `git add .`, the changes are now marked as **staged** and are in the staging area. This is also called the **index**.
 * **Repository**: After we `git commit` our changes, they will be added to our local `.git` repository as **committed**
 
 We can now look at the file states with regards to sections in the project:
@@ -58,6 +59,11 @@ We can now look at the file states with regards to sections in the project:
 Any committed files will move back to the *modified* state after we have changed them, and from there, they can move through the lifecycle again. Any unmodified files will still be in the *committed* state, so safely stored in your git database (so your local `.git` folder and, if you have set up a remote and pushed your commit to it, also in your upstream repository).
 
 If you have any modified files for which you want to skip the staging area, you can run `git commit -a` so that git will commit all tracked files without you having to `add` them first. This does not work for any untracked files, however.
+
+Git uses the file status to communicate to us what the status of our files is. However, a file can also have multiple states – we could do some preliminary changes, add them to the staging area, and then do some more changes. In that case, git will have multiple snapshots of that file, one snapshot per commit where that file changed, another snapshot for the staged version, and yet another one for the working directory version of our file.\
+Git will then show us that the file has some changes that are to be committed and some other changes that are not yet staged:
+
+![Making some changes to a file, adding them to the staging area, and making more changes to the file](file-staging-and-working-directory-changes.png)
 
 ## Anatomy of a commit
 
