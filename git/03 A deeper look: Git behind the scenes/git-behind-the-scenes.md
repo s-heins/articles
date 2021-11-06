@@ -85,7 +85,7 @@ Let's say our collaborators Anna and Wolfgang have been busy and our git tree cu
 >lg = !clear && git log --all --graph --pretty='format:%C(auto)%h%d %s  %C(magenta)[%an] (%ad)%C(reset)' --date=format:'%d.%m.%y %H:%M'
 >```
 
-In this example, we have merged the branch "articles-on-animals-from-list" into "main" and the commit `2cca46a` is a merge commit. `98369a7` ("Add a house cat") is the first commit and has no parent, and all other commits in between have only one parent. The commits `0a6ebca` and `b6eb6d0` have the same parent, but they only have one parent.
+In this example, we have merged the branch "articles-on-animals-from-list" into "main" and the commit `2cca46a` is a merge commit. `98369a7` ("Add a house cat") is the first commit and has no parent, and all other commits in between have only one parent. The commits `0a6ebca` and `b9eb6d0` have the same parent, but they only have one parent.
 
 If you also want to look at the same commit data as me in this article, you can clone my `git-encyclopedia-example` project [on GitHub](https://github.com/s-heins/git-encyclopedia-example) by running `git clone https://github.com/s-heins/git-encyclopedia-example.git` (to clone via HTTPS).
 
