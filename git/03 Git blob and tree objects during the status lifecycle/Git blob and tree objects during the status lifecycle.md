@@ -32,7 +32,7 @@ echo "Lorem ipsum third level file" > third-level-file.md
 After just running `git add .`, **not** commit, the contents of the `.git/objects` folder now look like this:
 
 ```shell
-$ tree .
+$ tree .git/objects
 
 .
 ├── 1e
@@ -44,6 +44,8 @@ $ tree .
 ├── info
 └── pack
 ```
+
+For every file, git has created a SHA-1 hash that is 40 characters long. The first two characters make up the name of the directory in the `.git/objects` folder and the remaining 38 characters are used for the file name. To refer to an object, we don't always have to use the full 40-character hash; the first seven or so digits are usually sufficient for git to know which object we want since there is usually no other object sharing those first digits. In our example, our object hashes are `1e86cd8…`, `514ef30…`, and `de8fcf5…`.
 
 By examining the content with `git cat-file -p <object hash>`, we can find out that `1e86cd8` is the third-level file, `514ef30` is the top-level file, and `de8fcf5` is the second-level file.
 
@@ -60,7 +62,7 @@ After running `git commit`, git has created a commit with the shortened hash `34
 The git objects folder now looks like this (comments after `#` sign):
 
 ```shell
-$ tree .
+$ tree .git/objects
 
 .
 ├── 1e
@@ -137,7 +139,7 @@ $ echo "Adding a line to the second-level file" >> top-level-dir/second-level-fi
 Now we have added a line to the second-level file. Before we run `git add`, nothing changes in our object directory:
 
 ```shell
-$ tree .
+$ tree .git/objects
 
 .
 ├── 1e
@@ -163,7 +165,7 @@ $ tree .
 After we run `git add .`, we have a new directory and file, `f9cc8e0`:
 
 ```shell
-$ tree .
+$ tree .git/objects
 
 .
 ├── 1e
