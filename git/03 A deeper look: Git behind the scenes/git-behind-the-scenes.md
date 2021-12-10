@@ -1,5 +1,7 @@
 # A deeper look: Git behind the scenes
 
+![Cover image](cover%20image/Usal-9%20copy.jpg)
+
 In the [first article](https://dev.to/sheins/-a-practical-introduction-to-git-jumping-in-with-both-feet-2o56), we have looked at how to initialize a git repo locally, add and commit, and set some configuration options.
 Next, the second article covered how to work with remotes and branches, how to resolve conflicts, and how to merge and delete branches both from the CLI or from the GitHub UI.
 
@@ -23,6 +25,8 @@ Because the details of how git works exactly can easily make up a book (as seen 
     - [HEAD](#head)
     - [Detached HEAD state](#detached-head-state)
   - [Conclusion and command summary](#conclusion-and-command-summary)
+
+Cover image by [Jeremy Francis](https://m.facebook.com/story.php?story_fbid=10158229224234519&id=501159518) (with permission)
 
 ## How does git know a file has changed?
 
