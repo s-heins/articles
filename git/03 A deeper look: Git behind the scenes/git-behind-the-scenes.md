@@ -3,15 +3,18 @@
 In the [first article](https://dev.to/sheins/-a-practical-introduction-to-git-jumping-in-with-both-feet-2o56), we have looked at how to initialize a git repo locally, add and commit, and set some configuration options.
 Next, the second article covered how to work with remotes and branches, how to resolve conflicts, and how to merge and delete branches both from the CLI or from the GitHub UI.
 
-Now that we have gained some overview over the basic functions of git, it is time for an excursion into some basics on how git works behind the scenes. How does git notice that a file has changed so that it can show us this in our status? How does git realize branches? How does git know the order of the commits in each branch? What is HEAD and what is this mysterious detached HEAD state? And most importantly, how do I get out of this thing again?
+Now that we have gained some overview over the basic functions of git, it is time for an excursion into some basics on how git works behind the scenes. How does git notice that a file has changed so that it can show us this in our status? How does git realize branches? How does git know the order of the commits in each branch? What is HEAD and what is this mysterious detached HEAD state? And most importantly, how do I get out of this state again?
 
 As a resource for this article, I have used the [Pro Git book, written by Scott Chacon and Ben Straub](https://git-scm.com/book/en/v2) which is available for free and may be shared non-commercially.
 
-Because the details of how git works exactly can easily make up a book (as seen above), we will only look deeply enough in this article to set the stage for more advances git maneuvers such as rebasing, where you replay your work on top of a different commit than the one you originally set out from, and give some context to the commands we have covered in the first two articles.
+Because the details of how git works exactly can easily make up a book (as seen above), we will only look deeply enough in this article to set the stage for more advanced git maneuvers such as rebasing, where you replay your work on top of a different commit than the one you originally set out from, and to give some context to the commands we have covered in the first two articles.
 
 - [A deeper look: Git behind the scenes](#a-deeper-look-git-behind-the-scenes)
   - [How does git know a file has changed?](#how-does-git-know-a-file-has-changed)
   - [File status lifecycle and git project sections](#file-status-lifecycle-and-git-project-sections)
+    - [Git project sections](#git-project-sections)
+    - [Git file status lifecycle](#git-file-status-lifecycle)
+    - [One file can have multiple changes in different states at once](#one-file-can-have-multiple-changes-in-different-states-at-once)
   - [Anatomy of a commit](#anatomy-of-a-commit)
   - [Back to the start – creating a repository](#back-to-the-start--creating-a-repository)
   - [References](#references)
@@ -23,27 +26,29 @@ Because the details of how git works exactly can easily make up a book (as seen 
 
 ## How does git know a file has changed?
 
-Git does not store the exact differences between files (for example, add the line "house cat" to your file "list-of-animals-to-write-about"), but rather, it stores **snapshots**. For this example, git has a snapshot of the file before adding that line and then compare it to the current version of the file to figure out if something has changed.
+Git does not store the exact differences between files (for example, add the line "house cat" to your file "list-of-animals-to-write-about"), but rather, it stores **snapshots**. For this example, git has a snapshot of the file before adding that line and then compares it to the current version of the file to figure out if something has changed.
 
-To do this, git computes a SHA-1 hash value based on the contents for each file and uses it for checksumming. SHA-1 is a cryptographic hash function that makes it highly unlikely to create the same hash for two different files, so if the hash is the same, we can assume that it was created based on the same input. If the checksum of a file has changed, the file itself must have changed. If a file was deleted and another was added but they share the same checksum, they must have the same contents – this is how git knows that a file was renamed.
-
-If the contents of a file have changed, the name will be the same but its hash will be different.
+To do this, git computes a SHA-1 hash value based on the contents for each file and uses it for checksumming. SHA-1 is a cryptographic hash function that makes it highly unlikely to create the same hash for two different files, so if the hash is the same, we can assume that it was created based on the same input. If the checksum of a file has changed, the file itself must have changed. If a file was deleted and another was added but they share the same checksum, they must have the same contents – this is how git knows that a file was renamed. If the contents of a file have changed, the name will be the same but its hash will be different.
 
 In case a file has not changed at all in a commit, git will not store the file itself again, just a link to the one it has already saved in a previous snapshot.
 
 ## File status lifecycle and git project sections
 
-In the first article, we have already added and committed files and file changes. Git knows three states for any file it already knows about: **modified**, **staged**, and **committed**. It then also has a fourth state for any files it doesn't know about: **untracked**.
+In the first article, we have already added and committed files and file changes. Git has three states for any file it already knows about: **modified**, **staged**, and **committed**. It then also has a fourth state for any files it doesn't know about: **untracked**.
 
 Let's now look at what different states a file is in, from its creation, adding it, and finally committing it. We will use `git status` to check which status our file is in.
 
 ![Different git states when creating, adding, and committing a file](git-states.png)
 
+### Git project sections
+
 As a file goes through its lifecycle, it will also travel through different sections of our git project:
 
 * **Working directory**: After adding `new-file`, the file is present in our directory and **untracked**, that means that we created a new file git doesn't know about yet. Any existing files we change will be in the **modified** state.
 * **Staging area**: After `git add .`, the changes are now marked as **staged** and are in the staging area. This is also called the **index**.
-* **Repository**: After we `git commit` our changes, they will be added to our local `.git` repository as **committed**
+* **Repository**: After we `git commit` our changes, they will be added to our local `.git` repository as **committed**. We can also push them to add them to our remote repository.
+
+### Git file status lifecycle
 
 We can now look at the file states with regards to sections in the project:
 
@@ -60,6 +65,8 @@ Any committed files will move back to the *modified* state after we have changed
 
 If you have any modified files for which you want to skip the staging area, you can run `git commit -a` so that git will commit all tracked files without you having to `add` them first. This does not work for any untracked files, however.
 
+### One file can have multiple changes in different states at once
+
 Git uses the file status to communicate to us what the status of our files is. However, a file can also have multiple states – we could do some preliminary changes, add them to the staging area, and then do some more changes. In that case, git will have multiple snapshots of that file, one snapshot per commit where that file changed, another snapshot for the staged version, and yet another one for the working directory version of our file.\
 Git will then show us that the file has some changes that are to be committed and some other changes that are not yet staged:
 
@@ -75,17 +82,21 @@ Commit metadata includes:
 
 * author of the commit (i.e. the person that wrote or changed the respective lines)
 * the committer (the person who committed the work of the author)
-* the parent of the commit (if applicable) – this is a pointer to a commit hash
+* the parent of the commit (if it has one) – this is a pointer to a commit hash
 
 In the example further below, we will see when author and committer can differ: For the merge commit we're going to be looking at, I am the author but GitHub committed for me since I executed the merge on the GitHub UI. Another example would be if someone *rebases* my commits on top of another parent. That means that they will take my work and replay it on top of another parent than the one I used originally. We will focus on such advanced git maneuvers in a subsequent article.
 
-Since every commit contains a reference to its parent (if it has one), we can think of commits as a linked list. If a commit has more than one parent, it is a merge commit. Usually, two branches would be merged so that the resulting commit would have two parents but it is also possible (albeit unusual) to merge more than two branches.
-If a commit has zero parents, it is the very first commit. If it has two (or more), it is a merge commit, and if it has one, it is a "normal" commit.
+Since every commit contains a reference to its parent (if it has one), we can think of commits as a linked list where each commit has between `0` and `n` parents:
+
+* If a commit has zero parents, it is the very first commit.
+* If it has two (or more), it is a merge commit. Usually, two branches would be merged so that the resulting commit would have two parents but it is also possible (albeit unusual) to merge more than two branches.
+* If a commit has one parent, it is a "normal" commit, i.e. neither a merge commit nor the very first commit in a repository.
 
 Let's say our collaborators Anna and Wolfgang have been busy and our git tree currently looks like this:
 
 ![The current git tree](current-git-tree.png)
 
+> Hint if you have not read the previous articles:\
 > To be able to use the `lg` command alias, add this line to your `~/.gitconfig` file under the [alias] section:
 >
 >```shell
@@ -93,12 +104,12 @@ Let's say our collaborators Anna and Wolfgang have been busy and our git tree cu
 >lg = !clear && git log --all --graph --pretty='format:%C(auto)%h%d %s  %C(magenta)[%an] (%ad)%C(reset)' --date=format:'%d.%m.%y %H:%M'
 >```
 
-In this example, we have merged the branch "articles-on-animals-from-list" into "main" and the commit `2cca46a` is a merge commit. `98369a7` ("Add a house cat") is the first commit and has no parent, and all other commits in between have only one parent. The commits `0a6ebca` and `b9eb6d0` have the same parent, but they only have one parent.
+In this example, we have merged the branch "articles-on-animals-from-list" into "main" and the commit `2cca46a` (that is also labeled as HEAD on the screenshot) is a merge commit. At the very bottom of the screenshot, `98369a7` ("Add a house cat") is the first commit and has no parent, and all other commits in between have only one parent. The commits `0a6ebca` and `b9eb6d0` have the same parent, but they only have one parent: Our merge commit that we have currently checked out and is the last commit on the main branch.
 
 If you also want to look at the same commit data as me in this article, you can clone my `git-encyclopedia-example` project [on GitHub](https://github.com/s-heins/git-encyclopedia-example) by running `git clone https://github.com/s-heins/git-encyclopedia-example.git` (to clone via HTTPS).
 
 To look at `commit` metadata, we can use `git cat-file -p`, where `-p` lets us pretty-print the object's content.
-I'm saying "object" because git stores multiple pieces of information as objects – such as `blob` objects for files, `commit` objects, and `tree` objects which allow us to reference other `tree` objects and `blob` objects to model a file tree. (Any children `tree` objects would then represent folders and `blob` objects would be files). To read more about this, see [chapter 10.2 in the pro git book](https://git-scm.com/book/en/v2/Git-Internals-Git-Objects). The fourth type of git objects are annotated *tags* which we will discuss soon when we talk about *references* in git.
+I'm saying "object" because git stores multiple pieces of information as objects – such as `blob` objects for files, `commit` objects, and `tree` objects which allow us to reference other `tree` objects and `blob` objects to model a file tree. (Any children `tree` objects would then represent folders and `blob` objects would be files). To read more about this, see [chapter 10.2 in the pro git book](https://git-scm.com/book/en/v2/Git-Internals-Git-Objects). The fourth type of git objects are *annotated tags* which we will discuss soon when we talk about *references* in git. For short, we will refer to *annotated tags* as just tags in the following text.
 
 Types of git objects:
 
@@ -107,7 +118,7 @@ Types of git objects:
 * tree
 * tag
 
-We can use `git cat-file -p` to look at our merge commit, `2cca46a` for example, where we will see that it has two parents and what their commit hashes are. As mentioned before, we can also see that in this case, author and committer are different.
+We can use `git cat-file -p` to look at our merge commit, `2cca46a` for example, where we will see that it has two parents and what their commit hashes are. As mentioned before, we can also see that in this case, author and committer are different because I created the merge commit via the GitHub UI.
 
 ![Using git cat-file -p to look at commit metadata](git-cat-file-on-commit.png)
 
@@ -201,7 +212,7 @@ Like in programming, git references point to other things. This could be a commi
 
 ### Branches
 
-In case you want to work together with someone, you could always send them the name of your latest commit and they could then check out that commit. That would be a lot of hassle, however, since you would have to keep messaging them any time you make a change, and they would need to check their messages constantly. At this rate, no one would want to work with us on any projects and the world would be a sad place.
+In case you want to work together with someone, you could always send them the name of your latest commit and they could then check out that commit. That would be a lot of hassle, however, since you would have to keep messaging them any time you make a change to tell them the newest commit hash, and they would need to check their messages constantly. At this rate, no one would want to work with us on any projects and the world would be a sad place.
 
 To make things a lot easier, we can refer to a line of work with branches. Behind the scenes, a branch is just a reference to a commit with the added bonus that if you add a child to this commit, the reference gets advanced to this latest commit. The commit the reference points to then carries information about its parent commits but the branch itself is just a pointer to the latest commit, the so-called **head**. That means that git just infers which commits belong to a branch based on the commit the branch points to and its parent(s) and their parent(s). Git can show us where our branch diverged from main by going backward from the head to its parents and showing us those commits which are not contained in the main branch, i.e. which are not the commit that the main branch points to nor parents of it.
 
@@ -216,7 +227,7 @@ When we merge this branch to main then, git will create a merge commit that has 
 
 ### Tags
 
-Tags are very similar to branches in that they *reference a commit*. However, while a branch reference auto-advances when you push a new commit on top of the one that the branch currently points to, tags stay fixed.
+Tags are very similar to branches in that they *reference a commit*. However, while *a branch reference auto-advances when you push a new commit* on top of the one that the branch currently points to, *tags stay fixed*.
 
 This is handy if you work with releases for your software and you want to mark a certain commit as a specific version. Then, it would be rather annoying if your tag kept moving as you added more commits; you'd have no way of finding out which commit was associated with your release for version 1.2.4, for example.  
 
@@ -228,7 +239,7 @@ After we have added the tag, we can now add more commits on top and we can see t
 
 ![Adding a commit on top of a tagged commit](tag-reference-fixed.png)
 
-To learn more about tags and other references, have a look in [chapter 10.3](https://git-scm.com/book/en/v2/Git-Internals-Git-References#tags) of the git pro book.
+To learn more about tags and other references, have a look at [chapter 10.3](https://git-scm.com/book/en/v2/Git-Internals-Git-References#tags) of the git pro book.
 
 ### HEAD
 
